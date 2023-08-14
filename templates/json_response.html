@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+    $("#toggleButton").click(function(){
+        $("#urlsTable").hide();
+    });
+    $("#toggleButton1").click(function(){
+        $("#urlsTable").show();
+    });
+    });
+    </script>
+    <button id="toggleButton" class="btn btn-outline-info">
+        Hide Full Search History
+    </button>
+    <button id="toggleButton1" class="btn btn-outline-info">
+        Show Full Search History
+    </button>
+    </div>
+    <!-- Display the URLs data in a table -->
+    <table class="table" id="urlsTable">
+        <thead>
+            <tr>
+                <th> Search Order </th>
+                <th>URL</th>
+                <th>Safety Status</th>
+                <th> Last Search Date</th>
+                <th>Last Search Time</th>
+                <th>Username</th>
+                <th>Total Searches</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for url_data in urls_data %}
+                <tr>
+                    <td>{{ url_data.id }}</td>
+                    <td>{{ url_data.url }}</td>
+                    <td>{{ url_data.safety_status }}</td>
+                    <td>{{ url_data.search_date }}</td>
+                    <td>{{ url_data.search_time }}</td>
+                    <!--<td>{{ url_data.searched_by }}</td>-->
+                    <!-- make this visible only to some kind of root user-->
+                    <td>
+                        {% set searched_by_list = url_data.get_searched_by_list() %}
+                        {% for username, count in searched_by_list.items() %}
+                            {{ display_username(form) }}{% if count > 1 %} ({{ count }}){% endif %}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ url_data.total_searches }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="btn btn-outline-info" id="button">
+        <a href="{{ entered_url }}" class="no-underline">
+            <h4 id="register">Continue to site</h4>
+        </a>
+    </div>
+{% endblock %}
+
+

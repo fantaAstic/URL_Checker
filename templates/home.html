@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>{{ subtitle }}</h2>
+    <p>{{ text }}</p>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    
+    <h3> Simply enter a suspicious URL &#x2193; </h3> 
+    <div class="card">
+    <div class="image-wrapper">
+        <img class="image" src="{{ url_for('static', filename='hello.jpg') }}" alt="Example searching">
+    </div>
+    </div>
+
+    <h3> Check results in a matter of seconds &#x2193; </h3>
+    <div class="card">
+    <div class="image-wrapper">
+        <img class="image" src="{{ url_for('static', filename='table.jpg') }}" alt="Example Table">
+    </div>
+    </div>
+
+    <div id="button" class="btn btn-outline-info">
+        <a href="{{ url_for('register') }}" class="no-underline">
+            <h4 id="register">Ready to begin?</h4>
+        </a>
+    </div>
+{% endblock content %}

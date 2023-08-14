@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <!-- adding first form field with data validation-->
+                <div class="form-group">
+                    {{ form.url.label(class="form-control-label") }}
+                    {% if form.url.errors %}
+                      {{ form.url(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.url.errors%}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      {{ form.url(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <!-- adding the button -->
+            <div class="form-group" id = "button">
+                {{ form.submit(class="btn btn-outline-info") }}
+             </div>
+        </form>
+    </div>
+{% endblock content %}

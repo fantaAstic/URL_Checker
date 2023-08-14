@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Register</h2>
+    <div class="content-section">      
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <!-- adding first form field with data validation-->
+                <div class="form-group">
+                    {{ form.username.label(class="form-control-label") }}
+                    {% if form.username.errors %}
+                      {{ form.username(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.username.errors%}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      {{ form.username(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <!-- the email form field -->
+                <div class="form-group">
+                    {{ form.email.label(class="form-control-label") }}
+                    {% if form.email.errors %}
+                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors%}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <!-- the password form field -->
+                <div class="form-group">
+                    {{ form.password.label(class="form-control-label") }}
+                    {% if form.password.errors %}
+                      {{ form.password(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.password.errors%}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                        {{ form.password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <!-- the confirm password form field -->
+                <div class="form-group">
+                    {{ form.confirm_password.label(class="form-control-label") }}
+                    {% if form.confirm_password.errors %}
+                      {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.confirm_password.errors%}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                        {{ form.confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-check">
+              <label class="form-check-label">
+                  {{ form.consent(class="form-check-input") }}
+                  I consent to receive the <a href="/url_form">Weekly round-up email</a>
+              </label>
+          </div>
+            <!-- adding the button -->
+            <div class="form-group" id = "button">
+                {{ form.submit(class="btn btn-outline-info") }}
+             </div>
+        </form>       
+    </div>
+    <div id="button" class="btn btn-outline-info">
+      <a href="{{ url_for('login') }}" class="no-underline">
+          <h4 id="register">Already have an account?</h4>
+      </a>
+  </div>
+{% endblock content %}
