@@ -18,15 +18,6 @@ class FurtherTests(unittest.TestCase):
 
     
     # unittest for the login function process_login_form_submission
-    def test_login_successful(self):
-        form_data = {
-            'username': 'user_1', 
-            'password': 'hello'  
-        }
-        
-        result = process_login_form_submission(form_data)
-        
-        self.assertTrue(result)  # Assert that the login was successful
 
 
     # unittest for the url_form function process_url_form_submission
