@@ -25,7 +25,7 @@ def handle_registration(form):
 
 # core piece
 def check_safety_status(url):
-    api_key = "AIzaSyBzRNE9NegrNTaZlgTjHVDYzranvqeIBBY"
+    api_key = "CLASSIFIED"
     
     # Construct the request payload
     payload = {
@@ -60,16 +60,6 @@ def check_safety_status(url):
             return "Unsafe - Threat Type: " + data['matches'][0]['threatType']  # Access threatType from data    
     else:
         return "Failed"
-
-
-def check_url_with_apivoid(api_key, url):
-    endpoint = f"https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key={api_key}&url={url}"
-    response = requests.get(endpoint)
-    json_data = response.json()
-    return json_data
-
-
-unsafe_urls = []
 
 
 def process_url_form_submission(form): # pass url and current user instead of the form
