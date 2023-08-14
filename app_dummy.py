@@ -170,7 +170,7 @@ def check_url_with_apivoid(api_key, url):
 
 @app.route("/json_response/<path:url>", methods=['GET', 'POST'])
 def json_response(url):
-    api_key = "CLASSIFIED"  # Replace with your actual API key, 7 calls left, new one: 9f6b5d4b45d6e73c37bdea9b3aa54610064052fe
+    api_key = "CLASSIFIED" 
     response_data = check_url_with_apivoid(api_key, url)
 
     if response_data:
