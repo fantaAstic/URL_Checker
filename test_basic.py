@@ -1,9 +1,5 @@
 import unittest, sys
 
-from main import handle_registration, check_safety_status, check_url_with_apivoid, process_url_form_submission, process_login_form_submission
-
-from app import home, about, register, url_form, json_response, login, logout, load_user
-
 sys.path.append('../webdev') # imports python file from parent directory
 from app import app, db #imports flask app object
 
