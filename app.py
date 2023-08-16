@@ -171,7 +171,7 @@ def display_username(form):
         return random_name
     return form.username.data  # Return actual username if consent was given
 
-# for python anywhere deployment
+# for pythonanywhere deployment
 from flask import Flask, render_template, url_for, flash, redirect, request 
 import git
 
