@@ -13,7 +13,6 @@ import os
 
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)
-app.config['SECRET_KEY'] = '9ed6f394a4ae213fa02b310b4a6a277e'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
 
