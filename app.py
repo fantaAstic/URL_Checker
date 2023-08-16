@@ -1,4 +1,4 @@
-# to contain only the running of the flask app and routes
+# to contain only the running of the flask app and routes.
 
 from flask import Flask, render_template, url_for, flash, redirect, request, redirect, url_for, flash
 from forms import RegistrationForm, URLForm, LoginForm
