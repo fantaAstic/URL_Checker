@@ -14,7 +14,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)
-app.config['SECRET_KEY'] = 'CLASSIFIED'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
 
 # Initialize the database with the Flask app
