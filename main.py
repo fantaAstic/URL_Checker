@@ -25,8 +25,8 @@ def handle_registration(form):
 
 # core piece
 def check_safety_status(url):
-    api_key = "CLASSIFIED"
-    
+    api_key = 'AIzaSyBzRNE9NegrNTaZlgTjHVDYzranvqeIBBY'
+
     # Construct the request payload
     payload = {
         "client": {
@@ -43,7 +43,7 @@ def check_safety_status(url):
 
     # Send the request using a post request
     response = requests.post(
-        "https://safebrowsing.googleapis.com/v4/threatMatches:find", 
+        "https://safebrowsing.googleapis.com/v4/threatMatches:find",
         headers={"Content-Type": "application/json"},
         params={"key": api_key},
         json=payload
@@ -57,7 +57,7 @@ def check_safety_status(url):
             return "Safe"
         else:
             print(data)
-            return "Unsafe - Threat Type: " + data['matches'][0]['threatType']  # Access threatType from data    
+            return "Unsafe - Threat Type: " + data['matches'][0]['threatType']  # Access threatType from data
     else:
         return "Failed"
 
