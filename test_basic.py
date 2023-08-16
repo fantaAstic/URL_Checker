@@ -2,13 +2,13 @@ import unittest, sys, os
 from flask_sqlalchemy import SQLAlchemy
 
 sys.path.append('../webdev') # imports python file from parent directory
-# from app import app, db
+from app import app, db
 
 class BasicTests(unittest.TestCase):
 
     # executed prior to each test
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_testing.db'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
         self.app = app.test_client()
 
     ###############
