@@ -13,11 +13,8 @@ import os
 
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)
-<<<<<<< HEAD
 app.config['SECRET_KEY'] = '9ed6f394a4ae213fa02b310b4a6a277e'
-=======
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key
->>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
 
 # Initialize the database with the Flask app
@@ -126,11 +123,7 @@ def load_user(user_id):
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'fanta.kebe305@gmail.com'
-<<<<<<< HEAD
-app.config['MAIL_PASSWORD'] = 'zvpgmgitjzhiteis'
-=======
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
->>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
