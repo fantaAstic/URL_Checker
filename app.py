@@ -172,7 +172,8 @@ def display_username(form):
     return form.username.data  # Return actual username if consent was given
 
 # for python anywhere deployment
-from flask import Flask, render_template, url_for, flash, redirect, request import git
+from flask import Flask, render_template, url_for, flash, redirect, request 
+import git
 
  @app.route("/update_server", methods=['POST'])
  def webhook():
