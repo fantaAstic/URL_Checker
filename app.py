@@ -9,8 +9,7 @@ from flask_mail import Message, Mail
 from main import handle_registration, process_url_form_submission, check_safety_status, process_login_form_submission
 from models import db, User, URLs  # Import the db object and the models
 import random
-from apscheduler.schedulers.background import BlockingScheduler
-from apscheduler.triggers.cron import CronTrigger
+import os
 
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)
@@ -122,8 +121,8 @@ def load_user(user_id):
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'CLASSIFIED'
-app.config['MAIL_PASSWORD'] = 'CLASSIFIED'
+app.config['MAIL_USERNAME'] = 'fanta.kebe305@gmail.com'
+app.config['MAIL_PASSWORD'] = 'os.environ.get('MAIL_PASSWORD')'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
