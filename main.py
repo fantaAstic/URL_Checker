@@ -5,6 +5,7 @@ from models import User, URLs, db
 from flask_login import login_user, current_user
 from datetime import datetime
 import requests
+import os
 
 
 def handle_registration(form):
@@ -25,8 +26,13 @@ def handle_registration(form):
 
 # core piece
 def check_safety_status(url):
+<<<<<<< HEAD
     api_key = 'AIzaSyBzRNE9NegrNTaZlgTjHVDYzranvqeIBBY'
 
+=======
+    api_key = os.environ.get('API_KEY')
+    
+>>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
     # Construct the request payload
     payload = {
         "client": {

@@ -9,12 +9,15 @@ from flask_mail import Message, Mail
 from main import handle_registration, process_url_form_submission, check_safety_status, process_login_form_submission
 from models import db, User, URLs  # Import the db object and the models
 import random
-from apscheduler.schedulers.background import BlockingScheduler
-from apscheduler.triggers.cron import CronTrigger
+import os
 
 app = Flask(__name__)
 proxied = FlaskBehindProxy(app)
+<<<<<<< HEAD
 app.config['SECRET_KEY'] = '9ed6f394a4ae213fa02b310b4a6a277e'
+=======
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key
+>>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
 
 # Initialize the database with the Flask app
@@ -123,7 +126,11 @@ def load_user(user_id):
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'fanta.kebe305@gmail.com'
+<<<<<<< HEAD
 app.config['MAIL_PASSWORD'] = 'zvpgmgitjzhiteis'
+=======
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+>>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
@@ -171,6 +178,19 @@ def display_username(form):
         return random_name
     return form.username.data  # Return actual username if consent was given
 
+# for pythonanywhere deployment
+from flask import Flask, render_template, url_for, flash, redirect, request 
+import git
+
+@app.route("/update_server", methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('/home/URLCheckerF/URL_Checker') 
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Updated PythonAnywhere successfully', 200
+    else:
+        return 'Wrong event type', 400
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
