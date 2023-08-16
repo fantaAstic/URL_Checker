@@ -26,13 +26,8 @@ def handle_registration(form):
 
 # core piece
 def check_safety_status(url):
-<<<<<<< HEAD
-    api_key = 'AIzaSyBzRNE9NegrNTaZlgTjHVDYzranvqeIBBY'
-
-=======
     api_key = os.environ.get('API_KEY')
     
->>>>>>> e561d4dd05377732a034abfa6a7e3e5cc37f14c1
     # Construct the request payload
     payload = {
         "client": {
