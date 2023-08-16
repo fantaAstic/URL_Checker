@@ -1,7 +1,8 @@
-import unittest, sys
+import unittest, sys, os
+from flask_sqlalchemy import SQLAlchemy
 
 sys.path.append('../webdev') # imports python file from parent directory
-from app import app, db #imports flask app object
+from app import app, db
 
 class BasicTests(unittest.TestCase):
 
