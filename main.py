@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 import os
 
+API_KEY = os.environ.get('API_KEY')
 
 def handle_registration(form):
     try:
@@ -26,7 +27,7 @@ def handle_registration(form):
 
 # core piece
 def check_safety_status(url):
-    api_key = os.environ.get('API_KEY')
+    api_key = API_KEY
     
     # Construct the request payload
     payload = {
