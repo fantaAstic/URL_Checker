@@ -132,16 +132,30 @@ mail = Mail(app)
 
 def send_email():
     form = RegistrationForm()
-    if form.consent.data:  # Check if the consent box was checked
-        # Send a welcome email to the user
-        msg = Message("Welcome to Our Website!",
-                      sender='fanta.kebe305@gmail.com', recipients=[form.email.data])
-        msg.html = f"Thank you {form.username.data} for signing up on our website! We're excited to have you as a part of the community."
-        mail.send(msg)
 
-        # Add the user to the users_with_consent list
-        # Or any identifier for the user
-        users_with_consent.append(form.username.data)
+    if form.consent.data:  # Check if the consent box was checked
+        try:
+            if form.consent.data:  # Check if the consent box was checked
+                # Query the most searched URL
+                most_searched_url = URLs.query.order_by(URLs.total_searches.desc()).first()
+
+                # Prepare the HTML content for the email
+                html_content = f"Thank you {form.username.data} for signing up on our website! We're excited to have you as a part of the community.<br><br>"
+                html_content += "<strong>Most Searched URL:</strong><br>"
+                html_content += f"URL: {most_searched_url.url}, Searches: {most_searched_url.total_searches}"
+
+                # Send the email
+                msg = Message("Welcome to Our Website!",
+                            sender='fanta.kebe305@gmail.com', recipients=[form.email.data])
+                msg.html = html_content
+                mail.send(msg)
+
+                # Flash a success message
+                flash("Email sent successfully", "success")
+
+        except Exception as e:
+            # Flash an error message
+            flash(f"An error occurred: {str(e)}", "error")
 
 
 # Assuming you have a list to store used random numbers
