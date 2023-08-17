@@ -20,6 +20,8 @@ from models import db, User, URLs  # Import the db object and the models
 import random
 # for deployment
 import git
+# to protect secret keys
+import os
 
 app = Flask(__name__) # creates a Flask web application instance
 proxied = FlaskBehindProxy(app) # to set up flaskbehindproxy
