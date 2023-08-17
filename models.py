@@ -1,11 +1,15 @@
-# to contain the database tables
+# This file has all of the database tables
 
+# use of sqlalchemy for database management
 from flask_sqlalchemy import SQLAlchemy
+# need the date and time for one of the columns
 from datetime import datetime
+# using werkzeug to hash passwords for user security
 from werkzeug.security import generate_password_hash, check_password_hash
+# provides default implementations for the methods required by Flask-Login to manage user sessions, easier to manage authentication etc.
 from flask_login import UserMixin
 
-db = SQLAlchemy()
+db = SQLAlchemy() # initialises SQLAlchemy object for database tables
 
 #creating the Users table
 class User(UserMixin, db.Model):
@@ -15,7 +19,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(60), nullable=False)
 
     def set_password(self, password):
-            self.password = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -26,7 +30,7 @@ class User(UserMixin, db.Model):
 #creating the URLs table
 class URLs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(255), nullable=False)            # can only enter one URL at a time, so how do I check there is only one url? using regex? only has one http..or .com?
+    url = db.Column(db.String(255), nullable=False)         
     safety_status = db.Column(db.String(12), nullable=False)
     search_date = db.Column(db.Date, nullable=False, default=datetime.now().date())
     search_time = db.Column(db.Time, nullable=False, default=datetime.now().time())
@@ -42,7 +46,7 @@ class URLs(db.Model):
         self.search_time = datetime.now().time()  # Update search_time
         db.session.commit()
     
-    def get_searched_by_list(self):
+    def get_searched_by_list(self): # to get a list of users who have searched the same url to avoid duplicates in the display of data
         # to show usernames
         # Split the searched_by string into a list of usernames
         usernames = self.searched_by.split(',')
