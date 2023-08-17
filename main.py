@@ -10,6 +10,8 @@ from flask_login import login_user, current_user
 from datetime import datetime
 # requests module for API call
 import requests
+# for sceret key protection
+import os
 
 def handle_registration(form):
     try:
