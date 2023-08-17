@@ -1,49 +1,61 @@
-# to contain only the running of the flask app and routes.
+# This file contains the main flask web routes, emailing functions and a function for automating deployment
 
+# necessary flask imports
 from flask import Flask, render_template, url_for, flash, redirect, request, redirect, url_for, flash
+# the forms that I created in forms.py to be used
 from forms import RegistrationForm, URLForm, LoginForm
+# flask_login module to handle user login and logout
 from flask_login import LoginManager, current_user, login_required, logout_user
+# useful for deployment and security
 from flask_behind_proxy import FlaskBehindProxy
+# to handle the json response from the API
 import json
+# to handle the emailing function
 from flask_mail import Message, Mail
+# the main helper functions that are used in each web route
 from main import handle_registration, process_url_form_submission, check_safety_status, process_login_form_submission
+# the tables created by SQLAlchemy and stored in the site_dummy database
 from models import db, User, URLs  # Import the db object and the models
+# for the generartion of random numbers to create a random username
 import random
-import os
+# for deployment
+import git
 
-app = Flask(__name__)
-proxied = FlaskBehindProxy(app)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db'
+app = Flask(__name__) # creates a Flask web application instance
+proxied = FlaskBehindProxy(app) # to set up flaskbehindproxy
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') # to protect secret key # setting the secret key for session management, without this can't register, login
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site_dummy.db' # database connection
 
 # Initialize the database with the Flask app
 db.init_app(app)  # the db created in models - to avoid circular imports!
 
-# db = SQLAlchemy(app) #for the unittest to work, otherwise I have two db objects, I have imported db from the models file
-
-# Create all the tables
+# Create all the tables from models.py
 with app.app_context():
     db.create_all()
 
+# email configuration using Google's SMTP server and flask extension
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'fanta.kebe305@gmail.com'
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
+# route for the home page
 @app.route("/")
 def home():
     return render_template('home.html')
 
-
+# route for the about page
 @app.route("/about")
 def about():
     return render_template('about.html')
 
 
-@app.route("/test")
-def test():
-    return render_template('test.html')
+users_with_consent = [] # a list to store users who give consent upon registration
 
-
-users_with_consent = []
-
-
+# route for the register page
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
@@ -54,12 +66,8 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
-unsafe_urls = []
-
-
+# route for the url checking form
 @app.route("/url_form", methods=['GET', 'POST'])
-@login_required
 def url_form():
     form = URLForm()
     if form.validate_on_submit():
@@ -69,67 +77,55 @@ def url_form():
         return redirect(url_for('json_response', url=url))
     return render_template('url_form.html', title='Check URLs', form=form)
 
-
+# route for the response after a url is queried
 @app.route("/json_response/<path:url>", methods=['GET', 'POST'])
 def json_response(url):
-    # api_key = "9f6b5d4b45d6e73c37bdea9b3aa54610064052fe"  # check how many calls are left
-    response_data = check_safety_status(url)
+    response_data = check_safety_status(url) # make a call to the Google Safe Browsing API to determine whether or not the url is safe
 
     if response_data:
-        urls_data = URLs.query.all()
+        urls_data = URLs.query.all() # getting the data from the urls table
         return render_template(
             "json_response.html",
-            json_response=json.dumps(response_data, indent=2),
-            urls_data=urls_data,
-            entered_url=url
+            json_response=json.dumps(response_data, indent=2), # formatting the json response
+            urls_data=urls_data, # passing the data from the urls table to the html page
+            entered_url=url # passing the entered url to the html page
         )
     else:
         flash(
-            "Error occurred. Please check your API key or URL and try again.", "danger"
+            "Error occurred. Please check your API key or URL and try again.", "danger" # if there is an error 
         )
         return redirect(url_for("home"))
 
+# to manage user login and logout
+login_manager = LoginManager(app) # initializes the LoginManager instance using the Flask application instance app
+login_manager.login_view = 'login' # sets the login_view (i.e. endpoiny) attribute of the LoginManager instance, should I have any pages that require login
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-
-
+# route for the login page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated: # checks if current user is authenticated
         return redirect(url_for('url_form'))
 
-    form = LoginForm()
-    if form.validate_on_submit():
+    form = LoginForm() # instance of the user login form
+    if form.validate_on_submit(): # checks if the form has been submitted and passes the validation checks
         if process_login_form_submission(form):
             return redirect(url_for('url_form'))
 
     return render_template('login.html', title='Login', form=form)
 
-
+# route for the logout
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('home')) # when users logout they are taken to the home page
 
-
+# retrieves a user object from the database based on the user's ID - to store in the session
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'fanta.kebe305@gmail.com'
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
-
-# function to send emails
-
-
+# function to send welcome email
 def send_email():
     form = RegistrationForm()
 
@@ -157,26 +153,22 @@ def send_email():
             # Flash an error message
             flash(f"An error occurred: {str(e)}", "error")
 
-
-# Assuming you have a list to store used random numbers
-used_random_numbers = []
-
-
-def generate_random_name(): # comment and why
-    while True:
-        random_number = random.randint(1, 9999)  # Adjust the range as needed
-        if random_number not in used_random_numbers:
+# generates a random username to be displayed in the search history table
+def generate_random_name(): 
+    # A list to store used random numbers, so that no two users get the same random usernmane
+    used_random_numbers = []
+    while True: # a loop to keep generating random numbers and checking their uniqueness.
+        random_number = random.randint(1, 9999)  # Adjust the range as needed, not sure about site traffic yet
+        if random_number not in used_random_numbers: # if the number hasn't already been used
             used_random_numbers.append(random_number)
-            return f"user_{random_number}"
+            return f"user_{random_number}" # returns user_random_number
 
-# so that display usernmae function works
-
-
+# so that display username function works, adds the name variables to the json_response template context
 @app.context_processor
 def inject_functions():
     return dict(display_username=display_username)
 
-
+# generates random name for all users
 def display_username(form):
     form = RegistrationForm()
     if not form.consent.data:  # Check if the consent box was not checked
@@ -184,16 +176,13 @@ def display_username(form):
         return random_name
     return form.username.data  # Return actual username if consent was given
 
-# for pythonanywhere deployment
-from flask import Flask, render_template, url_for, flash, redirect, request 
-import git
-
+# for python anywhere deployment
 @app.route("/update_server", methods=['POST'])
 def webhook():
     if request.method == 'POST':
         repo = git.Repo('/home/URLCheckerF/URL_Checker') 
         origin = repo.remotes.origin
-        origin.pull()
+        origin.pull() # pulls (fetches and merges) the latest changes from the remote repository into the local repository - updates pythonaywhere codebase
         return 'Updated PythonAnywhere successfully', 200
     else:
         return 'Wrong event type', 400
